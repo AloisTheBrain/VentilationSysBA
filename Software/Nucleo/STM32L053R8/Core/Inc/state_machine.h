@@ -1,0 +1,13 @@
+
+
+#ifndef INC_STATE_MACHINE_H_
+#define INC_STATE_MACHINE_H_
+
+
+#define INIT_STATE 1
+#define STANDARD_STATE 2
+#define CONTROLLED_STATE 3
+#define BATHROOM_STATE 4
+#define STANDBY_STATE 5
+
+#endif /* INC_STATE_MACHINE_H_ */

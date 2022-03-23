@@ -1,0 +1,6 @@
+state_machine.c:15:6:StateMachine_process	8	static
+state_machine.c:43:6:Start_Timers	8	static
+state_machine.c:55:6:Set_All_PWM_To_Zero	8	static
+state_machine.c:67:6:Stop_Timers	8	static
+state_machine.c:80:6:Set_PWM	24	static
+state_machine.c:93:6:Switch_Direction	8	static
