@@ -1,14 +1,9 @@
-#ifndef __CONTROLLER_H__
-#define __CONTROLLER_H__
-#include <stdint.h>
+#ifndef INC_CONTROLLER_H_
+#define INC_CONTROLLER_H_
 
 
-typedef struct
-{
-	float Kp; //Proportional
-	float Ki; //Integral
-	float Kd; //Derivative
-}controller_param;
+
+float pi_controller(float ist_wert);
 
 
 

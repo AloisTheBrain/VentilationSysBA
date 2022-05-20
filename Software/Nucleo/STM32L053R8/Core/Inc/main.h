@@ -31,6 +31,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "controller.h"
+#include "state_machine.h"
 
 /* USER CODE END Includes */
 
@@ -54,6 +56,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -61,10 +64,10 @@ void Error_Handler(void);
 #define B1_GPIO_Port GPIOC
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define SEL7_Pin GPIO_PIN_10
-#define SEL7_GPIO_Port GPIOB
 #define SEL8_Pin GPIO_PIN_11
 #define SEL8_GPIO_Port GPIOB
+#define SEL7_Pin GPIO_PIN_9
+#define SEL7_GPIO_Port GPIOC
 #define SEL5_Pin GPIO_PIN_8
 #define SEL5_GPIO_Port GPIOA
 #define SEL4_Pin GPIO_PIN_11

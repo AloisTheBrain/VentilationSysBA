@@ -18,14 +18,18 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
 #include "lptim.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+//#include "KnxTpUart.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "global_config.h"
+#include "state_machine.h"
+
 
 /* USER CODE END Includes */
 
@@ -47,13 +51,12 @@
 
 /* USER CODE BEGIN PV */
 
-uint8_t tx_data[1] = {50};
-uint8_t data2[8];
 
-uint8_t rx_data1 [10];
-uint8_t rx_data2 [10];
+uint16_t count = 0;
+int new_pwm = 0;
 
-uint32_t adc_val = 0;
+uint8_t rx_data[4];
+uint8_t tx_data[4];
 
 /* USER CODE END PV */
 
@@ -65,6 +68,12 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim);
+void switch_direction();
+void statemachine_process();
+
 
 
 /* USER CODE END 0 */
@@ -100,20 +109,34 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM21_Init();
   MX_TIM22_Init();
-  MX_ADC_Init();
-  MX_USART1_UART_Init();
   MX_LPTIM1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_UART_Receive_IT(&huart1, rx_data1, sizeof(rx_data1));
-  HAL_UART_Receive_IT(&huart1, rx_data2, sizeof(rx_data2));
-  for(int i = 0; i<8; i++)
-  {
-	  data2[i] = 'x';
-  }
 
-  HAL_ADCEx_Calibration_Start(&hadc, ADC_SINGLE_ENDED);
-  HAL_ADC_Start_IT(&hadc);
+
+  //HAL_UART_MspInit(&huart2);
+  //HAL_UART_Transmit_IT(&huart2, tx_data, sizeof(tx_data));
+  /*__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_ERR);*/
+
+
+
+
+
+
+
+ // HAL_UART_Receive_IT(&huart2, rx_data, sizeof(rx_data));
+
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+
+  //HAL_UART_Transmit_IT(&huart2, tx_data, sizeof(tx_data));
+
+
 
   /* USER CODE END 2 */
 
@@ -123,9 +146,14 @@ int main(void)
   {
 
 
-	  HAL_UART_Transmit_IT(&huart1, tx_data, sizeof(tx_data));
 
-	  HAL_Delay(500);
+	  statemachine_process();
+	 // HAL_UART_Receive_IT(&huart2, rx_data, sizeof(rx_data));
+	  HAL_UART_Transmit_IT(&huart2, tx_data, sizeof(tx_data));
+
+	  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, new_pwm);
+	  //__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 3500);
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -150,11 +178,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_8;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLLMUL_4;
   RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -174,9 +204,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_LPTIM1;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
-  PeriphClkInit.LptimClockSelection = RCC_LPTIM1CLKSOURCE_PCLK;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_LPTIM1;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.LptimClockSelection = RCC_LPTIM1CLKSOURCE_LSI;
 
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -185,17 +215,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	HAL_UART_Receive_IT(&huart1, rx_data1, sizeof(rx_data1));
-	HAL_UART_Receive_IT(&huart1, rx_data2, sizeof(rx_data2));
-}
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
-{
-	adc_val = HAL_ADC_GetValue(&hadc);
+	HAL_UART_Receive_IT(&huart2, rx_uart_buffer, sizeof(rx_uart_buffer));
 }
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
+
+	__NOP();
+}
+
+void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim){
+
+	flag_lptim_interrupt = FLAG_TRUE;
+}
+
+
 /* USER CODE END 4 */
 
 /**
