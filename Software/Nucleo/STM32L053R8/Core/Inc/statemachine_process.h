@@ -16,6 +16,7 @@ void statemachine_init_state();
 void statemachine_set_state();
 void statemachine_standard_state();
 void statemachine_controlled_state();
+void statemachine_process ();
 
 typedef enum{
 	STANDBY_STATE = 0,
@@ -23,7 +24,7 @@ typedef enum{
 	STANDARD_STATE = 2,
 	SET_STATE = 3,
 	CONTROLLED_STATE = 4,
-} STATEMACHINE_STATE;
+} STATEMACHINE_STATES;
 
 
 

@@ -1,2 +1,2 @@
-controller.c:37:7:pi_controller	24	static
-controller.c:88:6:adjust_PWM	8	static
+controller.c:35:7:pi_controller	24	static
+controller.c:82:6:adjust_PWM	8	static

@@ -1,0 +1,7 @@
+statemachine_uart.c:16:6:statemachine_uart	8	static
+statemachine_uart.c:46:6:statemachine_controlbyte_state	8	static
+statemachine_uart.c:63:6:statemachine_address_state	8	static
+statemachine_uart.c:75:6:statemachine_payload_state	8	static
+statemachine_uart.c:89:6:statemachine_checksum_state	8	static
+statemachine_uart.c:99:6:statemachine_ack_state	8	static
+statemachine_uart.c:112:6:process_data	8	static

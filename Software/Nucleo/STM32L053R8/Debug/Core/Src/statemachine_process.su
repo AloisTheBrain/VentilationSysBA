@@ -1,0 +1,12 @@
+statemachine_process.c:20:6:statemachine_process	8	static
+statemachine_process.c:52:6:statemachine_standby_state	8	static
+statemachine_process.c:59:6:statemachine_init_state	8	static
+statemachine_process.c:68:6:statemachine_set_state	48	static
+statemachine_process.c:74:6:statemachine_standard_state	8	static
+statemachine_process.c:86:6:statemachine_controlled_state	8	static
+statemachine_process.c:95:6:start_timers	8	static
+statemachine_process.c:107:6:reset_all_pwm	24	static
+statemachine_process.c:111:6:stop_timers	8	static
+statemachine_process.c:122:6:set_pwm	24	static
+statemachine_process.c:133:6:switch_direction	8	static
+statemachine_process.c:140:6:toggle_all_gpio	8	static

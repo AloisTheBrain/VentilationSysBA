@@ -24,24 +24,16 @@ controller_param_t pi_param = {
 		.kp = KP,
 		.ki = KI,
 		.kd = KD,
+		.dt = DT_SAMPLE_TIME,
 };
-
-
-
-
-
 
 
 //float pid_controller(float soll_wert, float ist_wert, pid.Kp, pid.Ki, pid.Kd);
 
 float pi_controller(float ist_wert)
 {
-
-
-
-
 	error = set_humidity - ist_wert;
-	error_integral += error;
+	error_integral += error * pi_param.dt;
 
 	//Integralfehler begrenzen (Anti-Windup)
 	if(error_integral > max_error_integral){

@@ -31,7 +31,6 @@ Core/Src/controller.o: ../Core/Src/controller.c ../Core/Inc/controller.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim_ex.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h \
- ../Core/Inc/controller.h ../Core/Inc/state_machine.h \
  ../Core/Inc/global_config.h
 
 ../Core/Inc/controller.h:
@@ -101,9 +100,5 @@ Core/Src/controller.o: ../Core/Src/controller.c ../Core/Inc/controller.h \
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h:
 
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h:
-
-../Core/Inc/controller.h:
-
-../Core/Inc/state_machine.h:
 
 ../Core/Inc/global_config.h:

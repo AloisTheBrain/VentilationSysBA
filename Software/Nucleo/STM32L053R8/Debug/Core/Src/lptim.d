@@ -29,8 +29,7 @@ Core/Src/lptim.o: ../Core/Src/lptim.c ../Core/Inc/lptim.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim_ex.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h \
- ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h \
- ../Core/Inc/controller.h ../Core/Inc/state_machine.h
+ ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h
 
 ../Core/Inc/lptim.h:
 
@@ -97,7 +96,3 @@ Core/Src/lptim.o: ../Core/Src/lptim.c ../Core/Inc/lptim.h \
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h:
 
 ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h:
-
-../Core/Inc/controller.h:
-
-../Core/Inc/state_machine.h:

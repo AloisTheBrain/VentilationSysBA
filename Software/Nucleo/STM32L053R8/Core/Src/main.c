@@ -22,13 +22,14 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-//#include "KnxTpUart.h"
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "global_config.h"
-#include "state_machine.h"
+#include "controller.h"
+#include "statemachine_process.h"
+#include "statemachine_uart.h"
+
 
 
 /* USER CODE END Includes */
@@ -51,13 +52,6 @@
 
 /* USER CODE BEGIN PV */
 
-
-uint16_t count = 0;
-int new_pwm = 0;
-
-uint8_t rx_data[4];
-uint8_t tx_data[4];
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,9 +64,11 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
 void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim);
-void switch_direction();
-void statemachine_process();
+
+
+
 
 
 
@@ -113,30 +109,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-
-
-  //HAL_UART_MspInit(&huart2);
-  //HAL_UART_Transmit_IT(&huart2, tx_data, sizeof(tx_data));
-  /*__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
-  __HAL_UART_ENABLE_IT(&huart2, UART_IT_TXE);
-  __HAL_UART_ENABLE_IT(&huart2, UART_IT_ERR);*/
-
-
-
-
-
-
-
- // HAL_UART_Receive_IT(&huart2, rx_data, sizeof(rx_data));
-
-
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-
-  //HAL_UART_Transmit_IT(&huart2, tx_data, sizeof(tx_data));
-
-
+  HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
 
   /* USER CODE END 2 */
 
@@ -145,15 +118,9 @@ int main(void)
   while (1)
   {
 
-
-
 	  statemachine_process();
-	 // HAL_UART_Receive_IT(&huart2, rx_data, sizeof(rx_data));
-	  HAL_UART_Transmit_IT(&huart2, tx_data, sizeof(tx_data));
+	  process_data();
 
-	  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, new_pwm);
-	  //__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 3500);
-	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -217,11 +184,15 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
-	HAL_UART_Receive_IT(&huart2, rx_uart_buffer, sizeof(rx_uart_buffer));
+	statemachine_uart();
+
+}
+
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart){
+	__NOP();
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
-
 	__NOP();
 }
 
