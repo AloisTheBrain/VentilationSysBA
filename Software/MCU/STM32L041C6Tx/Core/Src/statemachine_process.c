@@ -13,7 +13,7 @@
 
 
 float humidity = 0;
-float max_humidity_allowed;
+float max_humidity_allowed = 50;
 
 uint8_t statemachine_process_state = STANDBY_STATE;
 
@@ -58,8 +58,9 @@ void statemachine_standby_state(){
 
 
 void statemachine_init_state(){
-	HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
 	flag_controlbyte_receive_started = FLAG_TRUE;
+	HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
+
 	start_timers();
 	reset_all_pwm();
 	statemachine_process_state = SET_STATE;

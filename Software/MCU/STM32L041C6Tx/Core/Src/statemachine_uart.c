@@ -46,59 +46,35 @@ void statemachine_uart()
 }
 
 void statemachine_controlbyte_state(){
-	//einmaliger start uart am anfang des progammes nicht vergessen
-	if(flag_controlbyte_receive_started == FLAG_FALSE && flag_data_processed == FLAG_TRUE){
-		HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
-		flag_controlbyte_receive_started = FLAG_TRUE;
-	}
-	//auf knx message prüfen
-	if(is_knx_controlbyte(knx_controlbyte)){
+	if(is_knx_controlbyte(knx_controlbyte) && flag_data_processed == FLAG_TRUE){
 		statemachine_uart_state = ADDRESS_STATE;
+		HAL_UART_Receive_IT(&huart2, buffer_knx_address, sizeof(buffer_knx_address));
 	}
 	else{
 		HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
 	}
+
 }
 
 
 //Richtiges controllbyte wurde empfangen
 void statemachine_address_state(){
 
-	if (flag_address_receive_started == FLAG_FALSE){
-		HAL_UART_Receive_IT(&huart2, buffer_knx_address, sizeof(buffer_knx_address));
-		flag_address_receive_started = FLAG_TRUE;
-	}
-	else{
-		statemachine_uart_state = PAYLOAD_STATE;
-	}
+	payload_length = get_payload_length(buffer_knx_address);
+	buffer_knx_payload = malloc(sizeof(uint8_t) * payload_length);			//speicher nach auswertung freigeben
+	statemachine_uart_state = PAYLOAD_STATE;
+	HAL_UART_Receive_IT(&huart2, buffer_knx_payload, sizeof(buffer_knx_payload));
 
 }
 
 void statemachine_payload_state(){
 
-	payload_length = get_payload_length(buffer_knx_address);
-
-	if(flag_payload_receive_started == FLAG_FALSE){
-		buffer_knx_payload = malloc(sizeof(uint8_t) * payload_length);			//speicher nach auswertung freigeben
-		HAL_UART_Receive_IT(&huart2, buffer_knx_payload, sizeof(buffer_knx_payload));
-		flag_payload_receive_started = FLAG_TRUE;
-	}
-	else{
-		statemachine_uart_state = CHECKSUM_STATE;
-	}
+	statemachine_uart_state = CHECKSUM_STATE;
+	HAL_UART_Receive_IT(&huart2, &knx_checksum_byte, sizeof(knx_checksum_byte));
 }
 
 void statemachine_checksum_state(){
-	if(flag_checksum_receive_started == FLAG_FALSE){
-		HAL_UART_Receive_IT(&huart2, &knx_checksum_byte, sizeof(knx_checksum_byte));
-		flag_checksum_receive_started = FLAG_TRUE;
-	}
-	else{
-		statemachine_uart_state = ACK_STATE;
-	}
-}
 
-void statemachine_ack_state(){
 	if(check_interest(buffer_knx_address)){
 		HAL_UART_Transmit_IT(&huart2, &interested_byte, sizeof(interested_byte));
 		flag_uart_reception_complete = FLAG_TRUE;
@@ -107,8 +83,17 @@ void statemachine_ack_state(){
 	else{
 		HAL_UART_Transmit_IT(&huart2, &not_interested_byte, sizeof(not_interested_byte));
 	}
+
+
 	clear_flags();
 	statemachine_uart_state = CONTROLBYTE_STATE;
+	HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
+
+}
+
+void statemachine_ack_state(){
+
+
 }
 
 void extract_data(void){

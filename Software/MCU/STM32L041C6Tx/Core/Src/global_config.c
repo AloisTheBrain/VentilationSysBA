@@ -18,8 +18,10 @@ bool flag_address_receive_started = FLAG_FALSE;
 bool flag_payload_receive_started = FLAG_FALSE;
 bool flag_checksum_receive_started = FLAG_FALSE;
 
-bool flag_data_processed = FLAG_FALSE;
+bool flag_data_processed = FLAG_TRUE;
 bool flag_uart_reception_complete = FLAG_FALSE;
+
+bool flag_entered_uart_callback = FLAG_FALSE;
 
 
 

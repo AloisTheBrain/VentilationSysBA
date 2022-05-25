@@ -1,6 +1,6 @@
 statemachine_process.c:21:6:statemachine_process	8	static
 statemachine_process.c:53:6:statemachine_standby_state	8	static
 statemachine_process.c:60:6:statemachine_init_state	8	static
-statemachine_process.c:69:6:statemachine_set_state	48	static
-statemachine_process.c:75:6:statemachine_standard_state	8	static
-statemachine_process.c:88:6:statemachine_controlled_state	24	static
+statemachine_process.c:70:6:statemachine_set_state	48	static
+statemachine_process.c:76:6:statemachine_standard_state	8	static
+statemachine_process.c:89:6:statemachine_controlled_state	24	static

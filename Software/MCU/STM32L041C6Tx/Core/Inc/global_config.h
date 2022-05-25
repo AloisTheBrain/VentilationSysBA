@@ -52,6 +52,8 @@ extern bool flag_checksum_receive_started;
 extern bool flag_data_processed;
 extern bool flag_uart_reception_complete;
 
+extern bool flag_entered_uart_callback;
+
 
 
 extern const uint16_t max_error_integral;
