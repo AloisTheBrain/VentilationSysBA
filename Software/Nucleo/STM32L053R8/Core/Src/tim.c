@@ -107,7 +107,7 @@ void MX_TIM21_Init(void)
   htim21.Instance = TIM21;
   htim21.Init.Prescaler = 0;
   htim21.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED1;
-  htim21.Init.Period = 2000;
+  htim21.Init.Period = 4000;
   htim21.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim21.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim21) != HAL_OK)
@@ -155,7 +155,7 @@ void MX_TIM22_Init(void)
   htim22.Instance = TIM22;
   htim22.Init.Prescaler = 0;
   htim22.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED1;
-  htim22.Init.Period = 2000;
+  htim22.Init.Period = 4000;
   htim22.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim22.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim22) != HAL_OK)

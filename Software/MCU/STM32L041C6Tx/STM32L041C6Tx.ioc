@@ -2,7 +2,7 @@
 File.Version=6
 GPIO.groupedBy=Group By Peripherals
 KeepUserPlacement=false
-LPTIM1.ClockPrescaler=LPTIM_PRESCALER_DIV64
+LPTIM1.ClockPrescaler=LPTIM_PRESCALER_DIV128
 LPTIM1.IPParameters=ClockPrescaler
 Mcu.CPN=STM32L041C6T6TR
 Mcu.Family=STM32L0
@@ -180,7 +180,7 @@ TIM22.Channel-PWM\ Generation2\ CH2=TIM_CHANNEL_2
 TIM22.CounterMode=TIM_COUNTERMODE_CENTERALIGNED1
 TIM22.IPParameters=Channel-PWM Generation1 CH1,Channel-PWM Generation2 CH2,Period,CounterMode
 TIM22.Period=4000
-USART2.BaudRate=9600
+USART2.BaudRate=19200
 USART2.IPParameters=BaudRate,VirtualMode-Asynchronous
 USART2.VirtualMode-Asynchronous=VM_ASYNC
 VP_LPTIM1_VS_LPTIM_counterModeInternalClock.Mode=Counts__internal_clock_event_00

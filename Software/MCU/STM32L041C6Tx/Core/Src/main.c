@@ -26,6 +26,12 @@
 /* USER CODE BEGIN Includes */
 
 #include "tim.h"
+#include "global_config.h"
+#include "controller.h"
+#include "statemachine_process.h"
+#include "statemachine_uart.h"
+#include "knx_receive_telegram.h"
+
 
 /* USER CODE END Includes */
 
@@ -46,9 +52,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t rx_data[4];
-uint8_t tx_data[4] = {1, 2, 3, 4};
-int test = 0;
 
 /* USER CODE END PV */
 
@@ -62,6 +65,10 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart);
+void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim);
+
+
 
 /* USER CODE END 0 */
 
@@ -99,16 +106,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_IT(&huart2, rx_data, sizeof(rx_data));
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 200);
-
-
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 200);
-
 
   /* USER CODE END 2 */
 
@@ -117,9 +114,9 @@ int main(void)
   while (1)
   {
 
+	  statemachine_process();
+	  extract_data();
 
-	  //HAL_UART_Transmit_IT(&huart2, tx_data, 4);
-	  //HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -180,14 +177,17 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	HAL_UART_Receive_IT(&huart2, rx_data, sizeof(rx_data));
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	statemachine_uart();
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 	__NOP();
+}
+
+void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim){
+	HAL_LPTIM_Counter_Stop_IT(&hlptim1);
+	flag_lptim_interrupt = FLAG_TRUE;
 }
 
 /* USER CODE END 4 */

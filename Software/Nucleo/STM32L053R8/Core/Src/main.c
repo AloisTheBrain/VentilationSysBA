@@ -29,6 +29,7 @@
 #include "controller.h"
 #include "statemachine_process.h"
 #include "statemachine_uart.h"
+#include "knx_receive_telegram.h"
 
 
 
@@ -51,6 +52,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+
 
 /* USER CODE END PV */
 
@@ -109,7 +112,6 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
 
   /* USER CODE END 2 */
 
@@ -119,7 +121,8 @@ int main(void)
   {
 
 	  statemachine_process();
-	  process_data();
+	  extract_data();
+
 
     /* USER CODE END WHILE */
 
@@ -185,7 +188,6 @@ void SystemClock_Config(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
 	statemachine_uart();
-
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart){
@@ -198,6 +200,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 
 void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim){
 
+	HAL_LPTIM_Counter_Stop_IT(&hlptim1);
 	flag_lptim_interrupt = FLAG_TRUE;
 }
 

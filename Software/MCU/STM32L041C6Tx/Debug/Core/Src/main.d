@@ -30,7 +30,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h \
  ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h \
  ../Core/Inc/lptim.h ../Core/Inc/main.h ../Core/Inc/usart.h \
- ../Core/Inc/gpio.h ../Core/Inc/tim.h
+ ../Core/Inc/gpio.h ../Core/Inc/tim.h ../Core/Inc/global_config.h \
+ ../Core/Inc/controller.h ../Core/Inc/statemachine_process.h \
+ ../Core/Inc/statemachine_uart.h ../Core/Inc/global_config.h \
+ ../Core/Inc/knx_receive_telegram.h
 
 ../Core/Inc/main.h:
 
@@ -103,3 +106,15 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/gpio.h:
 
 ../Core/Inc/tim.h:
+
+../Core/Inc/global_config.h:
+
+../Core/Inc/controller.h:
+
+../Core/Inc/statemachine_process.h:
+
+../Core/Inc/statemachine_uart.h:
+
+../Core/Inc/global_config.h:
+
+../Core/Inc/knx_receive_telegram.h:

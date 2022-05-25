@@ -40,9 +40,7 @@ void MX_LPTIM1_Init(void)
   hlptim1.Instance = LPTIM1;
   hlptim1.Init.Clock.Source = LPTIM_CLOCKSOURCE_APBCLOCK_LPOSC;
   hlptim1.Init.Clock.Prescaler = LPTIM_PRESCALER_DIV128;
-  hlptim1.Init.Trigger.Source = LPTIM_TRIGSOURCE_0;
-  hlptim1.Init.Trigger.ActiveEdge = LPTIM_ACTIVEEDGE_RISING;
-  hlptim1.Init.Trigger.SampleTime = LPTIM_TRIGSAMPLETIME_DIRECTTRANSITION;
+  hlptim1.Init.Trigger.Source = LPTIM_TRIGSOURCE_SOFTWARE;
   hlptim1.Init.OutputPolarity = LPTIM_OUTPUTPOLARITY_HIGH;
   hlptim1.Init.UpdateMode = LPTIM_UPDATE_IMMEDIATE;
   hlptim1.Init.CounterSource = LPTIM_COUNTERSOURCE_INTERNAL;
@@ -59,7 +57,6 @@ void MX_LPTIM1_Init(void)
 void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* lptimHandle)
 {
 
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
   if(lptimHandle->Instance==LPTIM1)
   {
   /* USER CODE BEGIN LPTIM1_MspInit 0 */
@@ -67,17 +64,6 @@ void HAL_LPTIM_MspInit(LPTIM_HandleTypeDef* lptimHandle)
   /* USER CODE END LPTIM1_MspInit 0 */
     /* LPTIM1 clock enable */
     __HAL_RCC_LPTIM1_CLK_ENABLE();
-
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    /**LPTIM1 GPIO Configuration
-    PC3     ------> LPTIM1_ETR
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_3;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF0_LPTIM1;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /* LPTIM1 interrupt Init */
     HAL_NVIC_SetPriority(LPTIM1_IRQn, 0, 0);
@@ -98,11 +84,6 @@ void HAL_LPTIM_MspDeInit(LPTIM_HandleTypeDef* lptimHandle)
   /* USER CODE END LPTIM1_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_LPTIM1_CLK_DISABLE();
-
-    /**LPTIM1 GPIO Configuration
-    PC3     ------> LPTIM1_ETR
-    */
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_3);
 
     /* LPTIM1 interrupt Deinit */
     HAL_NVIC_DisableIRQ(LPTIM1_IRQn);
