@@ -7,7 +7,7 @@
 #define NOT_INTERESTED_BYTE 0b0001000
 
 
-extern  uint8_t statemachine_uart_state;
+//static uint8_t statemachine_uart_state;
 
 void statemachine_uart (void);
 void statemachine_controlbyte_state(void);

@@ -1,7 +1,7 @@
-statemachine_uart.c:18:6:statemachine_uart	8	static
-statemachine_uart.c:48:6:statemachine_controlbyte_state	8	static
-statemachine_uart.c:61:6:statemachine_address_state	8	static
-statemachine_uart.c:70:6:statemachine_payload_state	8	static
-statemachine_uart.c:76:6:statemachine_checksum_state	8	static
-statemachine_uart.c:94:6:statemachine_ack_state	8	static
-statemachine_uart.c:99:6:extract_data	16	static
+statemachine_uart.c:25:6:statemachine_uart	8	static
+statemachine_uart.c:55:6:statemachine_controlbyte_state	8	static
+statemachine_uart.c:68:6:statemachine_address_state	8	static
+statemachine_uart.c:75:6:statemachine_payload_state	8	static
+statemachine_uart.c:86:6:statemachine_checksum_state	8	static
+statemachine_uart.c:106:6:statemachine_ack_state	8	static
+statemachine_uart.c:111:6:extract_data	16	static
