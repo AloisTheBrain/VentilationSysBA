@@ -59,7 +59,7 @@ void statemachine_standby_state(){
 
 void statemachine_init_state(){
 	flag_controlbyte_receive_started = FLAG_TRUE;
-	HAL_UART_Receive_IT(&huart2, &knx_controlbyte, sizeof(knx_controlbyte));
+	HAL_UART_Receive_IT(&huart2, knx_controlbytes, sizeof(knx_controlbytes));
 
 	start_timers();
 	reset_all_pwm();

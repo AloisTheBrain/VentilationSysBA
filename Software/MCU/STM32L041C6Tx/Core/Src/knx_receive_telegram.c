@@ -2,10 +2,10 @@
 #include "global_config.h"
 #include "string.h"
 #include "stdlib.h"
+#include "math.h"
 
 
-
-uint8_t knx_controlbyte;
+uint8_t knx_controlbytes[2];
 uint8_t knx_checksum_byte;
 uint8_t buffer_knx_address[5];
 uint8_t buffer_knx_header[6];
@@ -40,6 +40,28 @@ uint8_t get_target_subgroup(uint8_t *address_buffer){
   return address_buffer[3];
 }
 
+float get_2byte_float_value(uint8_t *payload_buffer){
+	  uint8_t exponent = (payload_buffer[2] & 0b01111000) >> 3;
+	  uint8_t mantisse = ((payload_buffer[2] & 0b00000111) << 8) | (payload_buffer[3]);
+
+	  //falls negatives vorzeichen(eigentlich nie)
+	  if (payload_buffer[2] & 0b10000000) {
+	    return ((-2048 + mantisse) * 0.01) * pow(2.0, exponent);
+	  }
+
+	  return (mantisse * 0.01) * pow(2.0, exponent);
+}
+
+bool check_for_controlbyte(uint8_t *buffer, uint8_t size){
+	bool rtrn_buffer[size];
+	bool rtrn = false;
+	for(int i = 0; 0 < size; i++){
+		rtrn_buffer[i] = ((buffer[i] | 0b00101100) == 0b10111100);
+		rtrn = rtrn || rtrn_buffer[i];
+	}
+	return rtrn;
+}
+
 bool check_interest(uint8_t *address_buffer){
 	uint8_t maingroup = get_target_maingroup(address_buffer);
 	uint8_t middlegroup = get_target_middlegroup(address_buffer);
@@ -57,21 +79,26 @@ void clear_flags(void){
 
 void add_listen_group_address(char *address){
 
-	// adressen format:  "15/0/0"
+	// adressen format:  "xx/xx/xxx"
 	char substring1[3];
-	char substring2[1];
+	char substring2[3];
+	char substring3[4];
 
 	strncpy(substring1, &address[0], 2);
 	substring1[2] = '\0';
-	substring2[0] = address[3];
-	int substring3 = address[5] + '0';
+	strncpy(substring1, &address[3], 2);
+	substring2[1] = '\0';
+	strncpy(substring1, &address[6], 3);
+	substring3[1] = '\0';
+
+
 	listen_group_addresses[listen_group_address_counter][0] = atoi(substring1);
 	listen_group_addresses[listen_group_address_counter][1] = atoi(substring2);
-	listen_group_addresses[listen_group_address_counter][2] = substring3;
+	listen_group_addresses[listen_group_address_counter][2] = atoi(substring3);
 	listen_group_address_counter++;
 }
 
-bool is_listening_to_group_address(int maingroup, int middlegroup, int subgroup){
+bool is_listening_to_group_address(uint8_t maingroup, uint8_t middlegroup, uint8_t subgroup){
   for (int i = 0; i < listen_group_address_counter; i++){
     if ((listen_group_addresses[i][0] == maingroup)
          && (listen_group_addresses[i][1] == middlegroup)

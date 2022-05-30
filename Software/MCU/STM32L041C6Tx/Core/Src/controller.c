@@ -27,7 +27,7 @@ controller_param_t pi_param = {
 uint16_t pi_controller(uint8_t process_variable)
 {
 
-	static float error_integral = 0;
+	float error_integral = 0;
 	uint16_t bias = min_pwm_val;
 	float error = setpoint_humidity - process_variable;
 	error_integral += error * pi_param.dt;

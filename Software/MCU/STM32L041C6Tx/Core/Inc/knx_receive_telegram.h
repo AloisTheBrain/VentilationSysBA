@@ -6,7 +6,7 @@
 #include "stdbool.h"
 
 
-extern uint8_t knx_controlbyte;
+extern uint8_t knx_controlbytes[2];
 extern uint8_t knx_checksum_byte;
 extern uint8_t buffer_knx_address[5];
 extern uint8_t buffer_knx_header[6];
@@ -25,7 +25,9 @@ uint8_t get_target_subgroup(uint8_t *adress_buffer);
 bool check_interest(uint8_t *adress_buffer);
 void clear_flags(void);
 void add_listen_group_address(char *address);
-bool is_listening_to_group_address(int main, int middle, int sub);
+bool is_listening_to_group_address(uint8_t main, uint8_t middle, uint8_t sub);
+bool check_for_controlbyte(uint8_t *buffer, uint8_t size);
+float get_2byte_float_value(uint8_t *payload_buffer);
 
 
 

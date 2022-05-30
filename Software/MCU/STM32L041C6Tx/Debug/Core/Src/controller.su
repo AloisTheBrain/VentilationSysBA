@@ -1,8 +1,8 @@
 controller.c:27:10:pi_controller	32	static
-controller.c:57:6:adjust_pwm_value	16	static
+controller.c:57:6:adjust_pwm_value	0	static
 controller.c:63:6:start_timers	8	static
-controller.c:76:6:reset_all_pwm	24	static
+controller.c:76:6:reset_all_pwm	0	static
 controller.c:80:6:stop_timers	8	static
-controller.c:91:6:set_pwm	24	static
+controller.c:91:6:set_pwm	8	static
+controller.c:109:6:toggle_all_gpio	16	static
 controller.c:102:6:switch_direction	8	static
-controller.c:109:6:toggle_all_gpio	8	static

@@ -107,6 +107,11 @@ int main(void)
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
 
+  //"15/0/1"
+  uint8_t test_buffer_address[5] =  {0, 0, 120, 1, 227};
+  bool test_interest = 0;
+  add_listen_group_address("15/0/1");
+  test_interest = check_interest(test_buffer_address);
   /* USER CODE END 2 */
 
   /* Infinite loop */
