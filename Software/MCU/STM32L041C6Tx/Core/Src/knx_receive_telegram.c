@@ -5,14 +5,8 @@
 #include "math.h"
 
 
+
 uint8_t knx_controlbytes[2];
-uint8_t knx_checksum_byte;
-uint8_t buffer_knx_address[5];
-uint8_t buffer_knx_header[6];
-uint8_t *buffer_knx_payload = NULL;
-
-
-
 uint8_t listen_group_address_counter = 0;
 
 bool is_knx_controlbyte(uint8_t byte){
@@ -70,20 +64,27 @@ bool check_interest(uint8_t *address_buffer){
 	return interested;
 }
 
-void clear_flags(void){
-	flag_controlbyte_receive_started 	= FLAG_FALSE;
-	flag_address_receive_started 		= FLAG_FALSE;
-	flag_payload_receive_started 		= FLAG_FALSE;
-	flag_checksum_receive_started		= FLAG_FALSE;
-}
+
 
 void add_listen_group_address(char *address){
 
-	// adressen format:  "xx/xx/xxx"
+	/*
 	char substring1[3];
 	char substring2[3];
 	char substring3[4];
+	char *maingroup;
+	char *middlegroup;
+	char *subgroup;
+	*/
+	char *token;
+	token = strtok(address, "/");
+	for (int i = 0; i < 3; i++){
+		listen_group_addresses[listen_group_address_counter][i] = atoi(token);
+		token = strtok(NULL, "/");
+	}
 
+	listen_group_address_counter++;
+	/*
 	strncpy(substring1, &address[0], 2);
 	substring1[2] = '\0';
 	strncpy(substring1, &address[3], 2);
@@ -92,10 +93,12 @@ void add_listen_group_address(char *address){
 	substring3[1] = '\0';
 
 
+
 	listen_group_addresses[listen_group_address_counter][0] = atoi(substring1);
 	listen_group_addresses[listen_group_address_counter][1] = atoi(substring2);
 	listen_group_addresses[listen_group_address_counter][2] = atoi(substring3);
-	listen_group_address_counter++;
+	*/
+
 }
 
 bool is_listening_to_group_address(uint8_t maingroup, uint8_t middlegroup, uint8_t subgroup){

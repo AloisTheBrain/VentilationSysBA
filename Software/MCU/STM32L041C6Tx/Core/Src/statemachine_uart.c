@@ -4,15 +4,23 @@
 #include "usart.h"
 #include "global_config.h"
 
-//statemachine_uart_state = CONTROLBYTE_STATE;
+
 uint8_t payload_length = 0;
 uint8_t interested_byte = 		0b00010001;
 uint8_t not_interested_byte = 	0b00010000;
 
-static uint8_t statemachine_uart_state = CONTROLBYTE_STATE;
-bool flag_knx_message_interested = FLAG_FALSE;
 
-uint8_t get_payload_lenght(uint8_t *buffer_knx_address);
+uint8_t knx_checksum_byte;
+uint8_t buffer_knx_address[5];
+uint8_t buffer_knx_header[6];
+uint8_t *buffer_knx_payload = NULL;
+
+uint8_t statemachine_uart_state = CONTROLBYTE_STATE;
+
+bool flag_knx_message_interested = FLAG_FALSE;
+bool flag_data_processed = FLAG_TRUE;
+bool flag_uart_reception_complete = FLAG_FALSE;
+
 
 uint8_t buffer_val1 = 0;
 uint8_t buffer_val2 = 0;
@@ -22,10 +30,8 @@ uint8_t buffer_val5 = 0;
 
 
 
-void statemachine_uart()
-{
-	switch(statemachine_uart_state)
-	{
+void statemachine_uart(void){
+	switch(statemachine_uart_state){
 
 	case CONTROLBYTE_STATE:
 		statemachine_controlbyte_state();
@@ -48,7 +54,7 @@ void statemachine_uart()
 	}
 }
 
-void statemachine_controlbyte_state(){
+void statemachine_controlbyte_state(void){
 	if(is_knx_controlbyte(knx_controlbytes[0]) && is_knx_controlbyte(knx_controlbytes[1]) && flag_data_processed == FLAG_TRUE){
 		HAL_UART_Receive_IT(&huart2, buffer_knx_address, sizeof(buffer_knx_address));
 		statemachine_uart_state = ADDRESS_STATE;
@@ -60,7 +66,7 @@ void statemachine_controlbyte_state(){
 
 
 //Richtiges controllbyte wurde empfangen
-void statemachine_address_state(){
+void statemachine_address_state(void){
 	if(check_for_controlbyte(buffer_knx_address, sizeof(buffer_knx_address))){
 		statemachine_uart_state = CONTROLBYTE_STATE;
 		HAL_UART_Receive_IT(&huart2, knx_controlbytes, sizeof(knx_controlbytes));
@@ -73,7 +79,7 @@ void statemachine_address_state(){
 	}
 }
 
-void statemachine_payload_state(){
+void statemachine_payload_state(void){
 	buffer_val1 = buffer_knx_payload[0];
 	buffer_val2 = buffer_knx_payload[1];
 	buffer_val3 = buffer_knx_payload[2];
@@ -91,8 +97,7 @@ void statemachine_payload_state(){
 
 }
 
-void statemachine_ack_state(){
-	flag_entered_uart_callback = FLAG_TRUE;
+void statemachine_ack_state(void){
 
 	if(is_knx_controlbyte(knx_checksum_byte)){
 			statemachine_uart_state = CONTROLBYTE_STATE;

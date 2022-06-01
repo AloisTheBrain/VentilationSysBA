@@ -9,13 +9,17 @@
 
 //static uint8_t statemachine_uart_state;
 
-void statemachine_uart (void);
+extern uint8_t knx_controlbytes[2];
+
+void statemachine_uart(void);
 void statemachine_controlbyte_state(void);
 void statemachine_address_state(void);
 void statemachine_payload_state(void);
 void statemachine_checksum_state(void);
 void statemachine_ack_state(void);
 void extract_data(void);
+
+
 
 typedef enum{
 	CONTROLBYTE_STATE = 0,

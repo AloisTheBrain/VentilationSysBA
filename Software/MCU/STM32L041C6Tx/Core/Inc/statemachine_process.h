@@ -7,12 +7,12 @@
 
 extern uint8_t statemachine_process_state;
 
-void statemachine_standby_state();
-void statemachine_init_state();
-void statemachine_set_state();
-void statemachine_standard_state();
-void statemachine_controlled_state();
-void statemachine_process ();
+void statemachine_standby_state(void);
+void statemachine_init_state(void);
+void statemachine_set_state(void);
+void statemachine_standard_state(void);
+void statemachine_controlled_state(void);
+void statemachine_process(void);
 
 typedef enum{
 	STANDBY_STATE = 0,

@@ -9,19 +9,12 @@
 #include "knx_receive_telegram.h"
 
 
-
-
-
-float humidity = 0;
-float max_humidity_allowed = 50;
-
 uint8_t statemachine_process_state = STANDBY_STATE;
 
 
 void statemachine_process ()
 {
-	switch(statemachine_process_state)
-	{
+	switch(statemachine_process_state){
 
 	case STANDBY_STATE:
 		statemachine_standby_state();
@@ -50,35 +43,33 @@ void statemachine_process ()
 
 
 
-void statemachine_standby_state(){
+void statemachine_standby_state(void){
 	reset_all_pwm();
-	stop_timers();
+	stop_all_timers();
 	statemachine_process_state = INIT_STATE;
 }
 
 
-void statemachine_init_state(){
-	flag_controlbyte_receive_started = FLAG_TRUE;
+void statemachine_init_state(void){
 	HAL_UART_Receive_IT(&huart2, knx_controlbytes, sizeof(knx_controlbytes));
-
-	start_timers();
+	start_all_timers();
 	reset_all_pwm();
 	statemachine_process_state = SET_STATE;
 }
 
 
-void statemachine_set_state(){
-	set_pwm(min_pwm_val, min_pwm_val, min_pwm_val, min_pwm_val, min_pwm_val, min_pwm_val, min_pwm_val, min_pwm_val);
+void statemachine_set_state(void){
+	set_all_pwm(min_pwm_val);
 	statemachine_process_state = STANDARD_STATE;
 }
 
 
-void statemachine_standard_state(){
-	if(humidity >= max_humidity_allowed){
+void statemachine_standard_state(void){
+	if(actual_humidity >= max_humidity_allowed){
 		statemachine_process_state = CONTROLLED_STATE;
 	}
 	else if(flag_lptim_interrupt == FLAG_TRUE){
-		switch_direction();
+		switch_all_directions();
 		flag_lptim_interrupt = FLAG_FALSE;
 		HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
 		statemachine_process_state = SET_STATE;
@@ -86,20 +77,19 @@ void statemachine_standard_state(){
 }
 
 
-void statemachine_controlled_state(){
+void statemachine_controlled_state(void){
 
 	uint16_t new_dutycycle = pi_controller(actual_humidity);
 	adjust_pwm_value(new_dutycycle);
-	if(flag_lptim_interrupt == FLAG_TRUE){
-		switch_direction();
+
+	if(actual_humidity <= setpoint_humidity){
+		statemachine_process_state = SET_STATE;
+	}
+	else if(flag_lptim_interrupt == FLAG_TRUE){
+		switch_directions_not_controlgroup();
 		flag_lptim_interrupt = FLAG_FALSE;
 		HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
-
 	}
-	if(humidity <= max_humidity_allowed){
-		statemachine_process_state = STANDARD_STATE;
-	}
-
 }
 
 

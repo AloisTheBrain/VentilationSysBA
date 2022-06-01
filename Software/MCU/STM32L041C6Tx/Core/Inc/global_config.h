@@ -11,7 +11,7 @@
 
 #define KNX_TELEGRAM_MAX_LENGTH 23
 
-#define PWM_FREQ 8000
+#define PWM_FREQ 8000					//to do: soll cube generierten code überschreiben //Ändern derzeit nur über CubeMx oder tim.c
 #define MIN_PWM_VAL 1000
 
 #define KP 1
@@ -19,12 +19,14 @@
 #define KD 0
 #define DT_SAMPLE_TIME 0.02
 
-#define SETPOINT_HUMIDITY 50
+#define SETPOINT_HUMIDITY 50		//gewünschter Wert
+#define MAX_HUMIDITY_ALLOWED 60		//Wert wann in den geregelten Modus übergehen soll
 
-#define MAX_ERROR_INTEGRAL 1000
+
+#define MAX_ERROR_INTEGRAL 1000		//Anti windup grenzen (nur negative relevant)
 #define MIN_ERROR_INTEGRAL -1000
 
-#define MAX_GROUP_LISTEN_ADDRESSES 10	//für erzeugung von array, kann beliebig erhöht werden
+#define MAX_GROUP_LISTEN_ADDRESSES 10	//Zur erzeugung von array, kann beliebig erhöht werden
 
 
 
@@ -33,27 +35,14 @@ extern uint8_t listen_group_addresses[MAX_GROUP_LISTEN_ADDRESSES][3];
 extern const uint16_t lptim_period;
 
 extern const float setpoint_humidity;
+extern const float max_humidity_allowed;
 extern float actual_humidity;
-
 
 
 extern const uint16_t min_pwm_val;
 
 
-
-
 extern bool flag_lptim_interrupt;
-
-extern bool flag_controlbyte_receive_started;
-extern bool flag_address_receive_started;
-extern bool flag_payload_receive_started;
-extern bool flag_checksum_receive_started;
-
-extern bool flag_data_processed;
-extern bool flag_uart_reception_complete;
-
-extern bool flag_entered_uart_callback;
-
 
 
 extern const uint16_t max_error_integral;
