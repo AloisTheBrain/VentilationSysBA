@@ -14,4 +14,4 @@ stm32l0xx_hal_pwr.c:652:6:HAL_PWR_DisableSleepOnExit	0	static
 stm32l0xx_hal_pwr.c:665:6:HAL_PWR_EnableSEVOnPend	0	static
 stm32l0xx_hal_pwr.c:678:6:HAL_PWR_DisableSEVOnPend	0	static
 stm32l0xx_hal_pwr.c:707:13:HAL_PWR_PVDCallback	0	static
-stm32l0xx_hal_pwr.c:690:6:HAL_PWR_PVD_IRQHandler	16	static
+stm32l0xx_hal_pwr.c:690:6:HAL_PWR_PVD_IRQHandler	8	static

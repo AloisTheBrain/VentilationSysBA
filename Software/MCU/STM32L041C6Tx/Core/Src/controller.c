@@ -7,7 +7,7 @@
 
 
 int dynamic_error[21] = {0,-2,-4,-6,-8,-10,-12,-14,-16,-18,-20,-22,-24,-26,-28,-30,-32,-34,-36,-38,-40};
-
+float error_integral = 0;
 
 controller_param_t pi_param = {
 		.kp = KP,
@@ -19,7 +19,7 @@ controller_param_t pi_param = {
 uint16_t pi_controller(uint8_t process_variable)
 {
 
-	float error_integral = 0;
+
 	//uint16_t bias = min_pwm_val;
 	float error = setpoint_humidity - process_variable;
 	error_integral += error;
@@ -44,7 +44,9 @@ uint16_t pi_controller(uint8_t process_variable)
 	return pi_output;
 }
 
-
+void reset_error_integral(void){
+	error_integral = 0;
+}
 
 void adjust_pwm_value(uint16_t new_duty){
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, new_duty);
@@ -104,16 +106,16 @@ void set_all_pwm(uint16_t pwm_value){
 void switch_directions_not_controlgroup(void){
 	set_pwm_not_controlgroup(0, 0, 0, 0, 0);
 	HAL_Delay(1000);
-	toggle_gpio_not_controlgroup();
+	toggle_gpios_not_controlgroup();
 }
 
 void switch_all_directions(void){
 	reset_all_pwm();
 	HAL_Delay(1000);
-	toggle_all_gpio();
+	toggle_all_gpios();
 }
 
-void toggle_all_gpio(void){
+void toggle_all_gpios(void){
 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);		//Lüfter 1 &htim2 , ersten drei sind in der controlgroup
 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_12);
@@ -124,7 +126,7 @@ void toggle_all_gpio(void){
 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
 }
 
-void toggle_gpio_not_controlgroup(void){
+void toggle_gpios_not_controlgroup(void){
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_11);
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);

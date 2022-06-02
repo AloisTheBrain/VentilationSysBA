@@ -12,20 +12,21 @@
 extern uint8_t knx_controlbytes[2];
 
 void statemachine_uart(void);
-void statemachine_controlbyte_state(void);
+void statemachine_first_controlbyte_state(void);
+void statemachine_second_controlbyte_state(void);
 void statemachine_address_state(void);
 void statemachine_payload_state(void);
-void statemachine_checksum_state(void);
 void statemachine_ack_state(void);
 void extract_data(void);
 
 
 
+
 typedef enum{
-	CONTROLBYTE_STATE = 0,
+	FIRST_CONTROLBYTE_STATE = 0,
 	ADDRESS_STATE = 1,
 	PAYLOAD_STATE = 2,
-	CHECKSUM_STATE = 3,
+	SECOND_CONTROLBYTE_STATE = 3,
 	ACK_STATE = 4,
 } UART_STATEMACHINE_STATES;
 

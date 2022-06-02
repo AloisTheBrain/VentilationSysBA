@@ -42,7 +42,7 @@ extern float actual_humidity;
 extern const uint16_t min_pwm_val;
 
 
-extern bool flag_lptim_interrupt;
+
 
 
 extern const uint16_t max_error_integral;

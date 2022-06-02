@@ -1,6 +1,7 @@
-statemachine_process.c:46:6:statemachine_standby_state	8	static
-statemachine_process.c:53:6:statemachine_init_state	8	static
-statemachine_process.c:61:6:statemachine_set_state	8	static
-statemachine_process.c:67:6:statemachine_standard_state	16	static
-statemachine_process.c:80:6:statemachine_controlled_state	16	static
-statemachine_process.c:15:6:statemachine_process	8	static
+statemachine_process.c:47:6:statemachine_standby_state	8	static
+statemachine_process.c:54:6:statemachine_init_state	8	static
+statemachine_process.c:62:6:statemachine_set_state	8	static
+statemachine_process.c:68:6:statemachine_standard_state	8	static
+statemachine_process.c:82:6:statemachine_controlled_state	8	static
+statemachine_process.c:16:6:statemachine_process	8	static
+statemachine_process.c:97:6:set_flag_lptim_interrupt	0	static

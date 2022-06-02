@@ -10,6 +10,7 @@
 
 
 uint8_t statemachine_process_state = STANDBY_STATE;
+bool flag_lptim_interrupt = FLAG_FALSE;
 
 
 void statemachine_process ()
@@ -51,7 +52,7 @@ void statemachine_standby_state(void){
 
 
 void statemachine_init_state(void){
-	HAL_UART_Receive_IT(&huart2, knx_controlbytes, sizeof(knx_controlbytes));
+	HAL_UART_Receive_IT(&huart2, &knx_controlbytes[0], sizeof(uint8_t));
 	start_all_timers();
 	reset_all_pwm();
 	statemachine_process_state = SET_STATE;
@@ -66,6 +67,7 @@ void statemachine_set_state(void){
 
 void statemachine_standard_state(void){
 	if(actual_humidity >= max_humidity_allowed){
+		reset_error_integral();
 		statemachine_process_state = CONTROLLED_STATE;
 	}
 	else if(flag_lptim_interrupt == FLAG_TRUE){
@@ -92,6 +94,9 @@ void statemachine_controlled_state(void){
 	}
 }
 
+void set_flag_lptim_interrupt(void){
+	flag_lptim_interrupt = FLAG_TRUE;
+}
 
 
 

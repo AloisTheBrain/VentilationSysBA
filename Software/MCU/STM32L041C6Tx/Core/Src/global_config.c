@@ -11,7 +11,6 @@ const uint16_t lptim_period = LPTIM_FREQ * SWITCH_DIRECTION_INTERVAL;
 
 const uint16_t min_pwm_val = MIN_PWM_VAL;
 
-bool flag_lptim_interrupt = FLAG_FALSE;
 
 uint8_t listen_group_addresses[MAX_GROUP_LISTEN_ADDRESSES][3];
 

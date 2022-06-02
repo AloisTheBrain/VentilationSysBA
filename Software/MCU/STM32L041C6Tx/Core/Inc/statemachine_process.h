@@ -13,6 +13,7 @@ void statemachine_set_state(void);
 void statemachine_standard_state(void);
 void statemachine_controlled_state(void);
 void statemachine_process(void);
+void set_flag_lptim_interrupt(void);
 
 typedef enum{
 	STANDBY_STATE = 0,

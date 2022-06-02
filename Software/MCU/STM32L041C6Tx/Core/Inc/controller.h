@@ -13,8 +13,9 @@ void adjust_pwm_value(uint16_t new_duty);
 void reset_all_pwm(void);
 void switch_directions_not_controlgroup(void);
 void switch_all_directions(void);
-void toggle_all_gpio(void);
-void toggle_gpio_not_controlgroup(void);
+void toggle_all_gpios(void);
+void toggle_gpios_not_controlgroup(void);
+void reset_error_integral(void);
 
 
 

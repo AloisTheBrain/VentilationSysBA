@@ -107,11 +107,13 @@ int main(void)
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
 
-  //"15/0/1"
-  uint8_t test_buffer_address[5] =  {0, 0, 120, 1, 227};
+
+  uint8_t test_buffer_address[5] =  {0, 0, 120, 3, 128};
+
   bool test_interest = 0;
-  add_listen_group_address("15/0/1");
+  add_listen_group_address("15/0/3");
   test_interest = check_interest(test_buffer_address);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -192,7 +194,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 
 void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim){
 	HAL_LPTIM_Counter_Stop_IT(&hlptim1);
-	flag_lptim_interrupt = FLAG_TRUE;
+	set_flag_lptim_interrupt();
 }
 
 /* USER CODE END 4 */

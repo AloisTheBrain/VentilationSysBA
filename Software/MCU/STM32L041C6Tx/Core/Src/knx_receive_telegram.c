@@ -49,7 +49,7 @@ float get_2byte_float_value(uint8_t *payload_buffer){
 bool check_for_controlbyte(uint8_t *buffer, uint8_t size){
 	bool rtrn_buffer[size];
 	bool rtrn = false;
-	for(int i = 0; 0 < size; i++){
+	for(int i = 0; i < size; i++){
 		rtrn_buffer[i] = ((buffer[i] | 0b00101100) == 0b10111100);
 		rtrn = rtrn || rtrn_buffer[i];
 	}
