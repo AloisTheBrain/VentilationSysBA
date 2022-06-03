@@ -10,7 +10,10 @@
 
 
 uint8_t statemachine_process_state = STANDBY_STATE;
-bool flag_lptim_interrupt = FLAG_FALSE;
+bool flag_switch_direction_demand = FLAG_FALSE;
+bool flag_fans_spun_out = FLAG_FALSE;
+bool flag_set_all_once = FLAG_FALSE;
+
 
 
 void statemachine_process ()
@@ -61,6 +64,7 @@ void statemachine_init_state(void){
 
 void statemachine_set_state(void){
 	set_all_pwm(min_pwm_val);
+	flag_set_all_once = FLAG_TRUE;
 	statemachine_process_state = STANDARD_STATE;
 }
 
@@ -70,32 +74,50 @@ void statemachine_standard_state(void){
 		reset_error_integral();
 		statemachine_process_state = CONTROLLED_STATE;
 	}
-	else if(flag_lptim_interrupt == FLAG_TRUE){
-		switch_all_directions();
-		flag_lptim_interrupt = FLAG_FALSE;
-		HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
+	else if(flag_switch_direction_demand == FLAG_TRUE){
+		//switch_all_directions();
+		reset_all_pwm();
+		flag_switch_direction_demand = FLAG_FALSE;
+		//HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
+		//statemachine_process_state = SET_STATE;
+	}
+	else if(flag_fans_spun_out == FLAG_TRUE){
+		toggle_all_gpios();
+		flag_fans_spun_out = FLAG_FALSE;
 		statemachine_process_state = SET_STATE;
 	}
 }
 
 
 void statemachine_controlled_state(void){
-
-	uint16_t new_dutycycle = pi_controller(actual_humidity);
-	adjust_pwm_value(new_dutycycle);
+	if(flag_set_all_once == FLAG_TRUE){
+		set_all_pwm(min_pwm_val);
+		flag_set_all_once = FLAG_FALSE;
+	}
+	//uint16_t new_dutycycle = pi_controller(actual_humidity);
+	//adjust_pwm_value(new_dutycycle);
 
 	if(actual_humidity <= setpoint_humidity){
 		statemachine_process_state = SET_STATE;
 	}
-	else if(flag_lptim_interrupt == FLAG_TRUE){
-		switch_directions_not_controlgroup();
-		flag_lptim_interrupt = FLAG_FALSE;
-		HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
+	else if(flag_switch_direction_demand == FLAG_TRUE){
+		//switch_directions_not_controlgroup();
+		reset_pwm_not_controlgroup();
+		flag_switch_direction_demand = FLAG_FALSE;
+		//HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
+	}
+	else if(flag_fans_spun_out == FLAG_TRUE){
+		toggle_gpios_not_controlgroup();
+		flag_fans_spun_out = FLAG_FALSE;
 	}
 }
 
-void set_flag_lptim_interrupt(void){
-	flag_lptim_interrupt = FLAG_TRUE;
+void set_flag_switch_direction_demand(void){
+	flag_switch_direction_demand = FLAG_TRUE;
+}
+
+void set_flag_fans_spun_out(void){
+	flag_fans_spun_out = FLAG_FALSE;
 }
 
 

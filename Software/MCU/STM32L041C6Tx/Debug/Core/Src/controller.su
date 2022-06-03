@@ -3,10 +3,11 @@ controller.c:47:6:reset_error_integral	0	static
 controller.c:51:6:adjust_pwm_value	0	static
 controller.c:58:6:start_all_timers	8	static
 controller.c:70:6:stop_all_timers	8	static
-controller.c:87:6:set_pwm_not_controlgroup	12	static
-controller.c:95:6:set_all_pwm	0	static
+controller.c:91:6:set_pwm_not_controlgroup	12	static
+controller.c:86:6:reset_pwm_not_controlgroup	16	static
+controller.c:99:6:set_all_pwm	0	static
 controller.c:82:6:reset_all_pwm	8	static
-controller.c:118:6:toggle_all_gpios	24	static
-controller.c:112:6:switch_all_directions	8	static
-controller.c:129:6:toggle_gpios_not_controlgroup	16	static
-controller.c:106:6:switch_directions_not_controlgroup	16	static
+controller.c:122:6:toggle_all_gpios	24	static
+controller.c:116:6:switch_all_directions	8	static
+controller.c:133:6:toggle_gpios_not_controlgroup	16	static
+controller.c:110:6:switch_directions_not_controlgroup	16	static

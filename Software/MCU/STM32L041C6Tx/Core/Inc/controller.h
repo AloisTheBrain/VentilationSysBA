@@ -16,6 +16,7 @@ void switch_all_directions(void);
 void toggle_all_gpios(void);
 void toggle_gpios_not_controlgroup(void);
 void reset_error_integral(void);
+void reset_pwm_not_controlgroup(void);
 
 
 

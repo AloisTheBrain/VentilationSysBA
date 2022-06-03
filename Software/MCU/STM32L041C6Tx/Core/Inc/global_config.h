@@ -6,13 +6,16 @@
 #include "stdbool.h"
 
 #define LPTIM_FREQ 298 					  // lptim_freq = (lptim_clock/prescaler) = 0.037 MHz / 124 = 298 Hz  //Ändern nur über CUbeMX oder lptim.c
-#define SWITCH_DIRECTION_INTERVAL 60     // Lütferrichtungswechsel in sekunden
+#define LPTIM_INTERRUPT_INTERVAL 10     // Lptim interrupt alle 10 sekunden
+
+#define FAN_SWITCH_DIRECTION_INTERVAL 40  //Lüfterrichtungswechsel alle 40 sekunden (nur vielfache von 10 möglich)
+#define FAN_SPIN_OUT_TIME 20				//Ausdrehzeit der Lüfter (nur vielfache von 10 möglich)
 
 
 #define KNX_TELEGRAM_MAX_LENGTH 23
 
 #define PWM_FREQ 8000					//to do: soll cube generierten code überschreiben //Ändern derzeit nur über CubeMx oder tim.c
-#define MIN_PWM_VAL 1000
+#define MIN_PWM_VAL 45
 
 #define KP 1
 #define KI 100
@@ -26,10 +29,11 @@
 #define MAX_ERROR_INTEGRAL 1000		//Anti windup grenzen (nur negative relevant)
 #define MIN_ERROR_INTEGRAL -1000
 
-#define MAX_GROUP_LISTEN_ADDRESSES 10	//Zur erzeugung von array, kann beliebig erhöht werden
+#define MAX_GROUP_LISTEN_ADDRESSES 30	//Zur erzeugung von array, kann beliebig erhöht werden
 
 
-
+extern const uint8_t switch_direction_interval;
+extern const uint8_t spin_out_time;
 extern uint8_t listen_group_addresses[MAX_GROUP_LISTEN_ADDRESSES][3];
 
 extern const uint16_t lptim_period;

@@ -110,9 +110,9 @@ int main(void)
 
   uint8_t test_buffer_address[5] =  {0, 0, 120, 3, 128};
 
-  bool test_interest = 0;
+
   add_listen_group_address("15/0/3");
-  test_interest = check_interest(test_buffer_address);
+
 
   /* USER CODE END 2 */
 
@@ -193,8 +193,17 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 }
 
 void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim){
-	HAL_LPTIM_Counter_Stop_IT(&hlptim1);
-	set_flag_lptim_interrupt();
+
+	static uint8_t lptim_counter = 0;
+	lptim_counter++;
+	if(lptim_counter == switch_direction_interval){
+		set_flag_switch_direction_demand(); //reset pwm
+	}
+	else if(lptim_counter == (switch_direction_interval + spin_out_time)){
+		set_flag_fans_spun_out();		//toggle gpio
+		lptim_counter = 0;
+	}
+
 }
 
 /* USER CODE END 4 */

@@ -83,6 +83,10 @@ void reset_all_pwm(void){
 	set_all_pwm(0);
 }
 
+void reset_pwm_not_controlgroup(void){
+	set_pwm_not_controlgroup(0, 0, 0, 0, 0);
+}
+
 
 void set_pwm_not_controlgroup(uint16_t TIM2_CH4, uint16_t TIM21_CH1, uint16_t TIM21_CH2, uint16_t TIM22_CH1, uint16_t TIM22_CH2){
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, TIM2_CH4);

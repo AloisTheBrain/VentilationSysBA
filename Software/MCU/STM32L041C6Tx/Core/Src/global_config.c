@@ -5,7 +5,7 @@
 
 
 
-const uint16_t lptim_period = LPTIM_FREQ * SWITCH_DIRECTION_INTERVAL;
+const uint16_t lptim_period = LPTIM_FREQ * LPTIM_INTERRUPT_INTERVAL;
 
 
 
@@ -20,3 +20,6 @@ float actual_humidity = 0;
 
 const uint16_t max_error_integral = MAX_ERROR_INTEGRAL;
 const uint16_t min_error_integral = MIN_ERROR_INTEGRAL;
+
+const uint8_t switch_direction_interval = FAN_SWITCH_DIRECTION_INTERVAL / 10;
+const uint8_t spin_out_time = FAN_SPIN_OUT_TIME / 10;
