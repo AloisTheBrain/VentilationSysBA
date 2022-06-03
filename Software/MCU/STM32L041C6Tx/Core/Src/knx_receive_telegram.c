@@ -36,13 +36,14 @@ uint8_t get_target_subgroup(uint8_t *address_buffer){
 
 float get_2byte_float_value(uint8_t *payload_buffer){
 	  uint8_t exponent = (payload_buffer[2] & 0b01111000) >> 3;
-	  uint8_t mantisse = ((payload_buffer[2] & 0b00000111) << 8) | (payload_buffer[3]);
+	  uint16_t mantisse = ((payload_buffer[2] & 0b00000111) << 8) | (payload_buffer[3]);
 
-	  //falls negatives vorzeichen(eigentlich nie)
+	  /*falls negatives vorzeichen(eigentlich nie)
+
 	  if (payload_buffer[2] & 0b10000000) {
 	    return ((-2048 + mantisse) * 0.01) * pow(2.0, exponent);
 	  }
-
+	  */
 	  return (mantisse * 0.01) * pow(2.0, exponent);
 }
 

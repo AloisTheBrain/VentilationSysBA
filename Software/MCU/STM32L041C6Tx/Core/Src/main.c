@@ -108,9 +108,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-  uint8_t test_buffer_address[5] =  {0, 0, 120, 3, 128};
-
-
   add_listen_group_address("15/0/3");
 
 

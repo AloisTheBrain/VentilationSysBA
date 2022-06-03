@@ -5,7 +5,7 @@ knx_receive_telegram.c:25:9:get_target_maingroup	0	static
 knx_receive_telegram.c:29:9:get_target_middlegroup	0	static
 knx_receive_telegram.c:33:9:get_target_subgroup	0	static
 knx_receive_telegram.c:37:7:get_2byte_float_value	16	static
-knx_receive_telegram.c:49:6:check_for_controlbyte	24	dynamic
-knx_receive_telegram.c:69:6:add_listen_group_address	8	static
-knx_receive_telegram.c:104:6:is_listening_to_group_address	12	static
-knx_receive_telegram.c:59:6:check_interest	24	static
+knx_receive_telegram.c:50:6:check_for_controlbyte	24	dynamic
+knx_receive_telegram.c:70:6:add_listen_group_address	8	static
+knx_receive_telegram.c:105:6:is_listening_to_group_address	12	static
+knx_receive_telegram.c:60:6:check_interest	24	static
