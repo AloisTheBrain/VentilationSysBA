@@ -2,15 +2,8 @@
 #include "stdlib.h"
 
 
-
-
-
-const uint16_t lptim_period = LPTIM_FREQ * LPTIM_INTERRUPT_INTERVAL;
-
-
-
+const uint16_t lptim_period = (LPTIM_FREQ * LPTIM_INTERRUPT_INTERVAL) -1;
 const uint16_t min_pwm_val = MIN_PWM_VAL;
-
 
 uint8_t listen_group_addresses[MAX_GROUP_LISTEN_ADDRESSES][3];
 

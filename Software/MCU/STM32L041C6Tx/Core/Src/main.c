@@ -107,7 +107,9 @@ int main(void)
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
 
-
+  //Hinzufügen von Gruppenaddressen auf die reagiert werden sollen
+  add_listen_group_address("15/0/1");
+  add_listen_group_address("15/0/2");
   add_listen_group_address("15/0/3");
 
 
@@ -117,7 +119,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
 	  statemachine_process();
 	  extract_data();
 
@@ -190,14 +191,15 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 }
 
 void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim){
-
 	static uint8_t lptim_counter = 0;
 	lptim_counter++;
+	//alle 40 Sekunden:
 	if(lptim_counter == switch_direction_interval){
-		set_flag_switch_direction_demand(); //reset pwm
+		set_flag_switch_direction_demand();
 	}
+	//alle 60 Sekunden:
 	else if(lptim_counter == (switch_direction_interval + spin_out_time)){
-		set_flag_fans_spun_out();		//toggle gpio
+		set_flag_fans_spun_out();
 		lptim_counter = 0;
 	}
 

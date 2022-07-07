@@ -12,11 +12,11 @@
 uint8_t statemachine_process_state = STANDBY_STATE;
 bool flag_switch_direction_demand = FLAG_FALSE;
 bool flag_fans_spun_out = FLAG_FALSE;
-bool flag_set_all_once = FLAG_FALSE;
+bool flag_waiting = FLAG_FALSE;
 
 
 
-void statemachine_process ()
+void statemachine_process(void)
 {
 	switch(statemachine_process_state){
 
@@ -32,8 +32,8 @@ void statemachine_process ()
 		statemachine_set_state();
 		break;
 
-	case STANDARD_STATE:
-		statemachine_standard_state();
+	case IDLE_STATE:
+		statemachine_idle_state();
 		break;
 
 	case CONTROLLED_STATE:
@@ -55,6 +55,7 @@ void statemachine_standby_state(void){
 
 
 void statemachine_init_state(void){
+	//UART-Kommunikation einmalig starten
 	HAL_UART_Receive_IT(&huart2, &knx_controlbytes[0], sizeof(uint8_t));
 	start_all_timers();
 	reset_all_pwm();
@@ -64,51 +65,52 @@ void statemachine_init_state(void){
 
 void statemachine_set_state(void){
 	set_all_pwm(min_pwm_val);
-	flag_set_all_once = FLAG_TRUE;
-	statemachine_process_state = STANDARD_STATE;
+	statemachine_process_state = IDLE_STATE;
 }
 
 
-void statemachine_standard_state(void){
-	if(actual_humidity >= max_humidity_allowed){
+void statemachine_idle_state(void){
+	if(actual_humidity >= max_humidity_allowed && flag_waiting == FLAG_FALSE){
 		reset_error_integral();
 		statemachine_process_state = CONTROLLED_STATE;
 	}
+	//Lüfter stoppen und ausdrehen lassen
 	else if(flag_switch_direction_demand == FLAG_TRUE){
-		//switch_all_directions();
 		reset_all_pwm();
 		flag_switch_direction_demand = FLAG_FALSE;
-		//HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
-		//statemachine_process_state = SET_STATE;
+		flag_waiting = FLAG_TRUE;
 	}
+	//Drehrichtung wechseln
 	else if(flag_fans_spun_out == FLAG_TRUE){
 		toggle_all_gpios();
 		flag_fans_spun_out = FLAG_FALSE;
+		flag_waiting = FLAG_FALSE;
 		statemachine_process_state = SET_STATE;
 	}
 }
 
 
 void statemachine_controlled_state(void){
-	if(flag_set_all_once == FLAG_TRUE){
-		set_all_pwm(min_pwm_val);
-		flag_set_all_once = FLAG_FALSE;
-	}
-	//uint16_t new_dutycycle = pi_controller(actual_humidity);
-	//adjust_pwm_value(new_dutycycle);
 
-	if(actual_humidity <= setpoint_humidity){
+	//Pi-Reglerschleife
+	uint16_t new_dutycycle = pi_controller(actual_humidity);
+	adjust_pwm_value(new_dutycycle);
+
+	if(actual_humidity <= setpoint_humidity && flag_waiting == FLAG_FALSE){
 		statemachine_process_state = SET_STATE;
 	}
+	//Lüfter stoppen und ausdrehen lassen
 	else if(flag_switch_direction_demand == FLAG_TRUE){
-		//switch_directions_not_controlgroup();
 		reset_pwm_not_controlgroup();
 		flag_switch_direction_demand = FLAG_FALSE;
-		//HAL_LPTIM_Counter_Start_IT(&hlptim1, lptim_period);
+		flag_waiting = FLAG_TRUE;
 	}
+	//Drehrichtung wechseln
 	else if(flag_fans_spun_out == FLAG_TRUE){
 		toggle_gpios_not_controlgroup();
 		flag_fans_spun_out = FLAG_FALSE;
+		flag_waiting = FLAG_FALSE;
+		set_pwm_not_controlgroup(min_pwm_val);
 	}
 }
 
@@ -117,7 +119,7 @@ void set_flag_switch_direction_demand(void){
 }
 
 void set_flag_fans_spun_out(void){
-	flag_fans_spun_out = FLAG_FALSE;
+	flag_fans_spun_out = FLAG_TRUE;
 }
 
 

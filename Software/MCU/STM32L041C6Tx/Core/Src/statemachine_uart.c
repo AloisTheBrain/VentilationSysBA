@@ -83,9 +83,8 @@ void statemachine_second_controlbyte_state(void){
 	}
 }
 
-
-//Richtiges controllbyte wurde empfangen
 void statemachine_address_state(void){
+	//Auf Kontrollbyte und seine Position prüfen
 	if(check_for_controlbyte(buffer_knx_address, sizeof(buffer_knx_address))){
 		if(is_knx_controlbyte(buffer_knx_address[4])){
 			if(is_knx_controlbyte(buffer_knx_address[3])){
@@ -103,7 +102,7 @@ void statemachine_address_state(void){
 	}
 	else{
 		payload_length = get_payload_length(buffer_knx_address);
-		buffer_knx_payload = (uint8_t *) malloc( sizeof(uint8_t) * payload_length );			//speicher nach auswertung freigeben
+		buffer_knx_payload = (uint8_t *) malloc( sizeof(uint8_t) * payload_length );
 		statemachine_uart_state = PAYLOAD_STATE;
 		HAL_UART_Receive_IT(&huart2, buffer_knx_payload, payload_length);
 	}
@@ -115,7 +114,7 @@ void statemachine_payload_state(void){
 	buffer_val3 = buffer_knx_payload[2];
 	buffer_val4 = buffer_knx_payload[3];
 	buffer_val5 = buffer_knx_payload[4];
-
+	//Auf Kontrollbyte und seine Position prüfen
 	if(check_for_controlbyte(buffer_knx_payload, sizeof(buffer_knx_payload))){
 		if(is_knx_controlbyte(buffer_knx_payload[payload_length - 1])){
 			if(is_knx_controlbyte(buffer_knx_payload[payload_length - 2])){
@@ -145,6 +144,7 @@ void statemachine_ack_state(void){
 			HAL_UART_Receive_IT(&huart2, &knx_controlbytes[1], sizeof(uint8_t));
 	}
 	else{
+		// ACK oder NACK senden
 		if(check_interest(buffer_knx_address)){
 			HAL_UART_Transmit_IT(&huart2, &interested_byte, sizeof(interested_byte));
 			flag_knx_message_interested = FLAG_TRUE;

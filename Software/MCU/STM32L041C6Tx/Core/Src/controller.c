@@ -15,16 +15,15 @@ controller_param_t pi_param = {
 		.kd = KD / DT_SAMPLE_TIME,
 };
 
-
-uint16_t pi_controller(uint8_t process_variable)
+uint16_t pi_controller(float process_variable)
 {
-
-
-	//uint16_t bias = min_pwm_val;
+	//Berechnung der Regelabweichung
 	float error = setpoint_humidity - process_variable;
+
+	//Berechung des Fehlerintegrals
 	error_integral += error;
 
-	//Integralfehler begrenzen (Anti-Windup)
+	//Anti-Windup
 	if(error_integral > max_error_integral){
 		error_integral = max_error_integral;
 	}
@@ -32,15 +31,17 @@ uint16_t pi_controller(uint8_t process_variable)
 		error_integral = min_error_integral;
 	}
 
-	uint16_t pi_output = ((pi_param.kp * error) + (pi_param.ki * error_integral)) * (-1);
-	//pi_output += bias;
-	//Stellgröße (PWM) begrenzen
+	//P-Anteil und I-Anteil addieren
+	uint16_t pi_output = (uint16_t) ((pi_param.kp * error) + (pi_param.ki * error_integral)) * (-1);
+
+	//Stellgröße begrenzen
 	if(pi_output > htim2.Init.Period){
 		pi_output = htim2.Init.Period;
 	}
 	else if(pi_output < min_pwm_val){
 		pi_output = min_pwm_val;
 	}
+	//Stellgröße zurückgeben
 	return pi_output;
 }
 
@@ -50,7 +51,7 @@ void reset_error_integral(void){
 
 void adjust_pwm_value(uint16_t new_duty){
 	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, new_duty);
-	//falls weitere Lüfter auf geregelten wert anspringen sollen
+	//falls weitere Lüfter auf geregelten wert anspringen sollen hier einfügen
 	//__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, new_duty);
 	//__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, new_duty);
 }
@@ -84,16 +85,16 @@ void reset_all_pwm(void){
 }
 
 void reset_pwm_not_controlgroup(void){
-	set_pwm_not_controlgroup(0, 0, 0, 0, 0);
+	set_pwm_not_controlgroup(0);
 }
 
 
-void set_pwm_not_controlgroup(uint16_t TIM2_CH4, uint16_t TIM21_CH1, uint16_t TIM21_CH2, uint16_t TIM22_CH1, uint16_t TIM22_CH2){
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, TIM2_CH4);
-	__HAL_TIM_SET_COMPARE(&htim21, TIM_CHANNEL_1, TIM21_CH1);
-	__HAL_TIM_SET_COMPARE(&htim21, TIM_CHANNEL_2, TIM21_CH2);
-	__HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_1, TIM22_CH1);
-	__HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_2, TIM22_CH2);
+void set_pwm_not_controlgroup(uint16_t pwm_value){
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, pwm_value);
+	__HAL_TIM_SET_COMPARE(&htim21, TIM_CHANNEL_1, pwm_value);
+	__HAL_TIM_SET_COMPARE(&htim21, TIM_CHANNEL_2, pwm_value);
+	__HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_1, pwm_value);
+	__HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_2, pwm_value);
 }
 
 void set_all_pwm(uint16_t pwm_value){
@@ -107,17 +108,7 @@ void set_all_pwm(uint16_t pwm_value){
 	__HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_2, pwm_value);
 }
 
-void switch_directions_not_controlgroup(void){
-	set_pwm_not_controlgroup(0, 0, 0, 0, 0);
-	HAL_Delay(1000);
-	toggle_gpios_not_controlgroup();
-}
 
-void switch_all_directions(void){
-	reset_all_pwm();
-	HAL_Delay(1000);
-	toggle_all_gpios();
-}
 
 void toggle_all_gpios(void){
 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_9);		//Lüfter 1 &htim2 , ersten drei sind in der controlgroup
